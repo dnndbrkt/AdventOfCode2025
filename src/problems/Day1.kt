@@ -14,7 +14,7 @@ class Dial {
     var allZeroClicks: Int = 0
         private set
 
-    fun rotate(rotation: Int) {
+    operator fun Dial.plus(rotation: Int) {
         val newPosition = position rotatedBy rotation
 
         val fullRotations = abs((rotation / MAX))
@@ -28,7 +28,6 @@ class Dial {
 
     companion object {
         const val MAX: Int = 100
-
         infix fun Int.rotatedBy(other: Int): Int = (this + other).mod(MAX)
     }
 }
@@ -67,7 +66,8 @@ class Day1 : Problem(1) {
     }
 
     fun solveAV2(input: List<Int>) = Dial().apply {
-        input.forEach { rotate(it) }
+        // this + it performs a rotation of the Dial (this) by some clicks (it)
+        input.forEach { this + it }
         println("First half answer (version 2): $zeroesAfterRotations")
     }
 
@@ -82,7 +82,8 @@ class Day1 : Problem(1) {
     }
 
     fun solveBV1(input: List<Int>) = Dial().apply {
-        input.forEach { rotate(it) }
+        // this + it performs a rotation of the Dial (this) by some clicks (it)
+        input.forEach { this + it }
         println("Second half answer (version 1): $allZeroClicks")
     }
 
