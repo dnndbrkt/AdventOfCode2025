@@ -32,10 +32,9 @@ class Day2 : Problem(2) {
 
         if (numberOfDigits == 1 || numberOfDigits % sequenceLength != 0) return false
 
-        val divisor = numberOfDigits / sequenceLength
         val sequence = id.slice(0..<sequenceLength)
 
-        return "($sequence){$divisor}".toRegex() matches id
+        return "($sequence)+".toRegex() matches id
     }
 
     fun checkInvalidityForAllSequenceLengthsWithRegex(id: String): Boolean {
