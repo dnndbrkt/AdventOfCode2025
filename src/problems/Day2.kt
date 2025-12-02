@@ -3,7 +3,6 @@ package problems
 import Problem
 import kotlin.math.pow
 
-
 class Day2 : Problem(2) {
     override fun solve(test: Boolean) {
         val problemInput = (if (test) testInput else input).map { it.parseLine() }.first()
@@ -18,35 +17,33 @@ class Day2 : Problem(2) {
         return listOfRanges.map { it[0].rangeTo(it[1]) }
     }
 
-    fun checkInvalidityDueToTwoSequencesUsingDivision(id: Long): Boolean {
-        val length = id.toString().length
+    fun Long.isInvalidDueToTwoRepeatingSequences(): Boolean {
+        val length = this.toString().length
         if (length % 2 != 0) return false
         else {
             val divisor = (10L exp (length / 2)).toLong()
-            return id.floorDiv(divisor) == id.rem(divisor)
+            return this.floorDiv(divisor) == this.rem(divisor)
         }
     }
 
-    fun checkInvalidityUsingRegex(id: String, sequenceLength: Int): Boolean {
-        val numberOfDigits = id.length
+    fun String.isInvalidDueToRepeatingSequencesOfLength(sequenceLength: Int): Boolean {
+        val numberOfDigits = this.length
 
         if (numberOfDigits == 1 || numberOfDigits % sequenceLength != 0) return false
 
-        val sequence = id.slice(0..<sequenceLength)
+        val sequence = this.slice(0..<sequenceLength)
 
-        return "($sequence)+".toRegex() matches id
+        return "($sequence)+".toRegex() matches this
     }
 
-    fun checkInvalidityForAllSequenceLengthsWithRegex(id: String): Boolean {
-        return (true in (1..id.length / 2).map { checkInvalidityUsingRegex(id, sequenceLength = it) })
-    }
+    fun String.isInvalid(): Boolean =
+        (1..this.length / 2).map { length -> this.isInvalidDueToRepeatingSequencesOfLength(length) }
+            .contains(true)
 
-    fun checkInvalidityForAllSequenceLengthsWithRegexAndFold(id: String): Boolean {
-        return (1..id.length / 2).fold(false) { current, length ->
-            current || checkInvalidityUsingRegex(
-                id,
-                length
-            )
+
+    fun String.isInvalidButCheckedByUsingFold(): Boolean {
+        return (1..this.length / 2).fold(false) { current, length ->
+            current || this.isInvalidDueToRepeatingSequencesOfLength(length)
         }
     }
 
@@ -54,14 +51,12 @@ class Day2 : Problem(2) {
 
     fun solveA(input: List<LongRange>) {
         val invalidIDsV1 = input
-            .flatMap { range -> range.filter { checkInvalidityDueToTwoSequencesUsingDivision(it) } }
+            .flatMap { range -> range.filter { it.isInvalidDueToTwoRepeatingSequences() } }
         val invalidIDsV2 = input
             .flatMap { range ->
                 range.filter {
-                    checkInvalidityUsingRegex(
-                        it.toString(),
-                        sequenceLength = (it.toString().length) / 2
-                    )
+                    val id = it.toString()
+                    id.isInvalidDueToRepeatingSequencesOfLength(id.length / 2)
                 }
             }
 
@@ -71,7 +66,7 @@ class Day2 : Problem(2) {
 
     fun solveB(input: List<LongRange>) {
         val invalidIDs = input
-            .flatMap { range -> range.filter { checkInvalidityForAllSequenceLengthsWithRegex(it.toString()) } }
+            .flatMap { range -> range.filter { it.toString().isInvalid() } }
 
         println("Second half answer: ${invalidIDs.sum()}")
     }
