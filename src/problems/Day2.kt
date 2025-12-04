@@ -1,7 +1,6 @@
 package problems
 
 import Problem
-import kotlin.math.pow
 
 class Day2 : Problem(2) {
     override fun solve(test: Boolean) {
@@ -46,8 +45,6 @@ class Day2 : Problem(2) {
             current || this.isInvalidDueToRepeatingSequencesOfLength(length)
         }
     }
-
-    infix fun Long.exp(power: Int) = this.toFloat().pow(power)
 
     fun solveA(input: List<LongRange>) {
         val invalidIDsV1 = input
